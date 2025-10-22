@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +20,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             overflow: hidden;
         }
         .header {
@@ -48,36 +48,47 @@
             font-size: 14px;
             color: #333;
         }
-        .form-group input {
-            padding: 10px;
+
+        /* Base styles for both inputs and selects */
+        .form-group input,
+        .form-group select {
+            padding: 10px 12px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
+            font-family: inherit;
+            background-color: #fff;
+            width: 100%;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            appearance: none;
         }
+
+        /* Add a custom dropdown arrow to SELECT elements */
+        .form-group select {
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-13%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013l128%20127.9c3.6%203.6%207.8%205.4%2013%205.4s9.4-1.8%2013-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-13%200-5-1.9-9.2-5.4-12.6z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 10px;
+            padding-right: 35px;
+        }
+
+        /* Remove spinners from number inputs */
+        .form-group input[type="number"]::-webkit-inner-spin-button,
+        .form-group input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
         .full-width {
             grid-column: 1 / -1;
         }
-        .button-container {
-            grid-column: 1 / -1;
-            margin-top: 10px;
-        }
-        .button-container button {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            color: white;
-            background-color: #d32f2f; /* Marriott-like red */
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .button-container button:hover {
-            background-color: #b71c1c;
-        }
+
         .results {
-            background-color: #f9f9f9;
+            background-color: #f9f9f4;
             padding: 30px;
             border-top: 1px solid #eee;
         }
@@ -101,14 +112,26 @@
             font-weight: 500;
             color: #d32f2f;
         }
+        .tooltip {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        /* --- NEW STYLE ADDED --- */
+        .result-explainer {
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+            text-align: right;
+            border-bottom: none;
+            padding: 0;
+        }
+        /* --- END NEW STYLE --- */
 
-        /* Responsive design for smaller screens */
         @media (max-width: 600px) {
             .calculator-body {
                 grid-template-columns: 1fr;
-            }
-            .full-width {
-                grid-column: 1 / -1; /* This is redundant but ensures consistency */
             }
         }
     </style>
@@ -131,16 +154,32 @@
             </div>
 
             <div class="form-group">
-                <label for="brandMultiplier">Brand Multiplier (e.g., 10)</label>
-                <input type="number" id="brandMultiplier" value="10">
+                <label for="brandMultiplier">Brand Earning Rate</label>
+                <select id="brandMultiplier">
+                    <option value="10" selected>Standard Brands (10X)</option>
+                    <option value="5">Residence Inn, TownePlace, Element (5X)</option>
+                    <option value="2.5">Marriott Exec. Apts (2.5X)</option>
+                </select>
             </div>
             <div class="form-group">
-                <label for="statusMultiplier">Status Bonus (%)</label>
-                <input type="number" id="statusMultiplier" value="75">
+                <label for="statusMultiplier">Status Level</label>
+                <select id="statusMultiplier">
+                    <option value="0">Member (0% Bonus)</option>
+                    <option value="10">Silver (10% Bonus)</option>
+                    <option value="25">Gold (25% Bonus)</option>
+                    <option value="50">Platinum (50% Bonus)</option>
+                    <option value="75" selected>Titanium (75% Bonus)</option>
+                    <option value="75">Ambassador (75% Bonus)</option>
+                </select>
             </div>
+            
             <div class="form-group">
-                <label for="ccMultiplier">Credit Card Multiplier (e.g., 0)</label>
-                <input type="number" id="ccMultiplier" value="0">
+                <label for="ccMultiplier">Credit Card</label>
+                <select id="ccMultiplier">
+                    <option value="0" selected>No Marriott Card (0X)</option>
+                    <option value="3">Chase Marriott Bold (3X)</option>
+                    <option value="6">All Other Marriott Cards (6X)</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="pointValue">Your Point Value (e.g., 0.007)</label>
@@ -148,19 +187,19 @@
             </div>
             
             <div class="form-group full-width">
-                <label for="welcomePoints">Welcome Gift Points</label>
-                <input type="number" id="welcomePoints" value="500">
+                <label for="welcomePoints">Welcome Gift: Stay at select brand?</label>
+                <select id="welcomePoints">
+                    <option value="500" selected>Yes (500 Points)</option>
+                    <option value="1000">No (1000 Points)</option>
+                </select>
+                <div class="tooltip">Select 'Yes' (500pts) for: Courtyard, AC, Moxy, Fairfield, Residence Inn, Four Points, SpringHill, TownePlace, Aloft. Select 'No' (1000pts) for all other full-service brands.</div>
             </div>
             <div class="form-group full-width">
                 <label for="promoPoints">Other Promotion Points</label>
                 <input type="number" id="promoPoints" value="3500">
             </div>
-
-            <div class="button-container">
-                <button onclick="calculatePoints()">Calculate</button>
-            </div>
         </div>
-
+        
         <div class="results">
             <h2>Calculation Results</h2>
             <div class="result-item">
@@ -174,6 +213,14 @@
             <div class="result-item">
                 <strong>CC Bonus:</strong>
                 <span id="resCcBonus">0</span>
+            </div>
+            <div class="result-item">
+                <strong>Welcome Points:</strong>
+                <span id="resWelcomePoints">0</span>
+            </div>
+            <div class="result-item">
+                <strong>Promotion Points:</strong>
+                <span id="resPromoPoints">0</span>
             </div>
             <div class="result-item" style="border-bottom: 2px solid #ccc;">
                 <strong>Total Points Earned:</strong>
@@ -195,50 +242,63 @@
                 <strong>Breakeven Points Price:</strong>
                 <span id="resBreakeven">0 points</span>
             </div>
-        </div>
+            
+            <div class="result-explainer">
+                If the points price is lower than the breakeven price, you choose to pay points, if higher, pay cash.
+            </div>
+            </div>
     </div>
 
     <script>
         function calculatePoints() {
-            // 1. Get all input values
+            // 1. Get all input values.
             const cashPrice = parseFloat(document.getElementById('cashPrice').value) || 0;
             const taxFee = parseFloat(document.getElementById('taxFee').value) || 0;
             const brandMultiplier = parseFloat(document.getElementById('brandMultiplier').value) || 0;
             const statusMultiplier = parseFloat(document.getElementById('statusMultiplier').value) || 0;
-            const ccMultiplier = parseFloat(document.getElementById('ccMultiplier').value) || 0;
+            const ccMultiplier = parseFloat(document.getElementById('ccMultiplier').value) || 0; 
             const pointValue = parseFloat(document.getElementById('pointValue').value) || 0.007;
             const welcomePoints = parseFloat(document.getElementById('welcomePoints').value) || 0;
             const promoPoints = parseFloat(document.getElementById('promoPoints').value) || 0;
 
             // 2. Perform Calculations
             const basePoints = cashPrice * brandMultiplier;
-            const statusBonus = basePoints * (statusMultiplier / 100);
-            const ccBonus = cashPrice * ccMultiplier;
+            const statusBonus = basePoints * (statusMultiplier / 100); 
+            const ccBonus = cashPrice * ccMultiplier; 
             const totalPoints = basePoints + statusBonus + ccBonus + welcomePoints + promoPoints;
 
             const totalCash = cashPrice + taxFee;
             const pointsValueCash = totalPoints * pointValue;
             const netCost = totalCash - pointsValueCash;
-            const breakevenPoints = (pointValue > 0) ? (totalCash / pointValue) : 0;
+            const breakevenPoints = (pointValue > 0) ? (netCost / pointValue) : 0;
 
             // 3. Display Results
-            // Helper function to format numbers
             const formatNum = (num) => num.toLocaleString(undefined, { maximumFractionDigits: 0 });
             const formatCurrency = (num) => num.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
-            // Update points breakdown
             document.getElementById('resBasePoints').innerText = formatNum(basePoints);
             document.getElementById('resStatusBonus').innerText = formatNum(statusBonus);
             document.getElementById('resCcBonus').innerText = formatNum(ccBonus);
+            document.getElementById('resWelcomePoints').innerText = formatNum(welcomePoints);
+            document.getElementById('resPromoPoints').innerText = formatNum(promoPoints);
             document.getElementById('resTotalPoints').innerText = formatNum(totalPoints);
 
-            // Update cash and value breakdown
             document.getElementById('resTotalCash').innerText = formatCurrency(totalCash);
             document.getElementById('resPointsValue').innerText = formatCurrency(pointsValueCash);
             document.getElementById('resNetCost').innerText = formatCurrency(netCost);
             document.getElementById('resBreakeven').innerText = `${formatNum(breakevenPoints)} points`;
         }
 
+        // Add event listeners to all input/select fields to auto-calculate
+        document.getElementById('cashPrice').addEventListener('input', calculatePoints);
+        document.getElementById('taxFee').addEventListener('input', calculatePoints);
+        document.getElementById('brandMultiplier').addEventListener('change', calculatePoints);
+        document.getElementById('statusMultiplier').addEventListener('change', calculatePoints);
+        document.getElementById('ccMultiplier').addEventListener('change', calculatePoints);
+        document.getElementById('pointValue').addEventListener('input', calculatePoints);
+        document.getElementById('welcomePoints').addEventListener('change', calculatePoints);
+        document.getElementById('promoPoints').addEventListener('input', calculatePoints);
+        
         // Run the calculation on page load with default values
         window.onload = calculatePoints;
     </script>
