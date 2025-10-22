@@ -1,4 +1,3 @@
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -146,11 +145,11 @@
         <div class="calculator-body">
             <div class="form-group">
                 <label for="cashPrice">Base Cash Price</label>
-                <input type="number" id="cashPrice" value="180">
+                <input type="number" id="cashPrice" value="100">
             </div>
             <div class="form-group">
                 <label for="taxFee">Tax & Fees</label>
-                <input type="number" id="taxFee" value="33">
+                <input type="number" id="taxFee" value="10">
             </div>
 
             <div class="form-group">
@@ -164,11 +163,11 @@
             <div class="form-group">
                 <label for="statusMultiplier">Status Level</label>
                 <select id="statusMultiplier">
-                    <option value="0">Member (0% Bonus)</option>
+                    <option value="0" selected>Member (0% Bonus)</option>
                     <option value="10">Silver (10% Bonus)</option>
                     <option value="25">Gold (25% Bonus)</option>
                     <option value="50">Platinum (50% Bonus)</option>
-                    <option value="75" selected>Titanium (75% Bonus)</option>
+                    <option value="75">Titanium (75% Bonus)</option>
                     <option value="75">Ambassador (75% Bonus)</option>
                 </select>
             </div>
@@ -192,11 +191,11 @@
                     <option value="500" selected>Yes (500 Points)</option>
                     <option value="1000">No (1000 Points)</option>
                 </select>
-                <div class="tooltip">Select 'Yes' (500pts) for: Courtyard, AC, Moxy, Fairfield, Residence Inn, Four Points, SpringHill, TownePlace, Aloft. Select 'No' (1000pts) for all other full-service brands.</div>
+                <div class="tooltip">Select 'Yes' for: Courtyard, AC, Moxy, Fairfield, Residence Inn, Four Points, SpringHill, TownePlace, Aloft. </div>
             </div>
             <div class="form-group full-width">
                 <label for="promoPoints">Other Promotion Points</label>
-                <input type="number" id="promoPoints" value="3500">
+                <input type="number" id="promoPoints" value="2025">
             </div>
         </div>
         
