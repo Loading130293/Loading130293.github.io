@@ -271,7 +271,7 @@
             </div>
             
             <div class="result-explainer">
-                Points needed to match the net cost of this stay.
+                If the points price is lower than the breakeven price, you choose to pay points, if higher, pay cash.
             </div>
 
         </div>
