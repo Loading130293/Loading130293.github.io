@@ -206,8 +206,8 @@
             <div class="form-group full-width">
                 <label for="welcomePoints">Welcome Gift: Stay at select brand?</label>
                 <select id="welcomePoints">
-                    <option value="500" selected>Yes (500 Points)</option>
-                    <option value="1000">No (1000 Points)</option>
+                    <option value="500">Yes (500 Points)</option>
+                    <option value="1000" selected>No (1000 Points)</option>
                 </select>
                 <div class="tooltip">Select 'Yes' for: Courtyard, AC, Moxy, Fairfield, Residence Inn, Four Points, SpringHill, TownePlace, Aloft.</div>
             </div>
