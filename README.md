@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -51,8 +51,9 @@
             color: #333;
         }
 
-        /* Base styles for both inputs and selects */
-        .form-group input,
+        /* --- REVISION 1: CSS SELECTOR MODIFIED --- */
+        /* Base styles for inputs (EXCLUDING checkboxes) and selects */
+        .form-group input:not([type="checkbox"]),
         .form-group select {
             padding: 10px 12px;
             border: 1px solid #ccc;
@@ -144,6 +145,36 @@
             border-bottom: none;
             padding: 0;
         }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-top: 5px; /* Space from its label */
+        }
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: 500;
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* --- REVISION 2: CSS FOR CHECKBOX MODIFIED --- */
+        .checkbox-group input[type="checkbox"] {
+            width: auto; /* Do not stretch to full width */
+            margin: 0;
+            flex-shrink: 0;
+            /* 'transform: scale(1.1)' removed to use system default size */
+            /* 'appearance: auto' is now the default since it's excluded above */
+        }
+        .checkbox-group a {
+            color: #00487C;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
 
         @media (max-width: 600px) {
             .calculator-body {
@@ -181,11 +212,11 @@
             <div class="form-group">
                 <label for="statusMultiplier">Status Level</label>
                 <select id="statusMultiplier">
-                    <option value="0" selected>Member (0% Bonus)</option>
+                    <option value="0">Member (0% Bonus)</option>
                     <option value="10">Silver (10% Bonus)</option>
                     <option value="25">Gold (25% Bonus)</option>
                     <option value="50">Platinum (50% Bonus)</option>
-                    <option value="75" >Titanium (75% Bonus)</option>
+                    <option value="75" selected>Titanium (75% Bonus)</option>
                     <option value="75">Ambassador (75% Bonus)</option>
                 </select>
             </div>
@@ -208,12 +239,25 @@
                 <select id="welcomePoints">
                     <option value="500">Yes (500 Points)</option>
                     <option value="1000" selected>No (1000 Points)</option>
+                    <option value="0">F&B Credit (0 points)</option>
                 </select>
                 <div class="tooltip">Select 'Yes' for: Courtyard, AC, Moxy, Fairfield, Residence Inn, Four Points, SpringHill, TownePlace, Aloft.</div>
             </div>
+
+            <div class="form-group full-width" style="border-top: 1px solid #eee; padding-top: 20px; margin-bottom: -10px;">
+                <label>Current Promotions</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="currentPromo" checked>
+                    <label for="currentPromo">
+                        2025 Q3: 2025 bonus points for up to 3 stays. Register 
+                        <a href="https://www.marriott.com/en-gb/loyalty/promotion.mi?promotion=CB25" target="_blank" rel="noopener noreferrer">here</a>.
+                    </label>
+                </div>
+            </div>
+
             <div class="form-group full-width">
-                <label for="promoPoints">Other Promotion Points</label>
-                <input type="number" id="promoPoints" value="2025">
+                <label for="promoPoints">Additional Promotion Points</label>
+                <input type="number" id="promoPoints" placeholder="e.g., 1000">
             </div>
 
             <div class="form-group full-width" style="border-top: 1px solid #eee; padding-top: 20px;">
@@ -284,16 +328,21 @@
             const taxFee = parseFloat(document.getElementById('taxFee').value) || 0;
             const brandMultiplier = parseFloat(document.getElementById('brandMultiplier').value) || 0;
             const statusMultiplier = parseFloat(document.getElementById('statusMultiplier').value) || 0;
-            const ccMultiplier = parseFloat(document.getElementById('ccMultiplier').value) || 0; 
-            const pointValue = parseFloat(document.getElementById('pointValue').value) || 0.007; // Fallback to 0.007
+            const ccMultiplier = parseFloat(document.getElementById('ccMultiplier').value) || 0;
+            const pointValue = parseFloat(document.getElementById('pointValue').value) || 0.005; // Use HTML default
             const welcomePoints = parseFloat(document.getElementById('welcomePoints').value) || 0;
-            const promoPoints = parseFloat(document.getElementById('promoPoints').value) || 0;
-            const altPrice = parseFloat(document.getElementById('altPrice').value) || 0; 
+            
+            const otherPromoPoints = parseFloat(document.getElementById('promoPoints').value) || 0;
+            const isPromoActive = document.getElementById('currentPromo').checked;
+            const currentPromoPoints = isPromoActive ? 2025 : 0;
+            const promoPoints = currentPromoPoints + otherPromoPoints; // Total promo points
+
+            const altPrice = parseFloat(document.getElementById('altPrice').value) || 0;
 
             // 2. Perform Calculations
             const basePoints = cashPrice * brandMultiplier;
-            const statusBonus = basePoints * (statusMultiplier / 100); 
-            const ccBonus = cashPrice * ccMultiplier; 
+            const statusBonus = basePoints * (statusMultiplier / 100);
+            const ccBonus = cashPrice * ccMultiplier;
             const totalPoints = basePoints + statusBonus + ccBonus + welcomePoints + promoPoints;
 
             const totalCashOriginal = cashPrice + taxFee;
@@ -320,7 +369,6 @@
             document.getElementById('resBreakeven').innerText = `${formatNum(breakevenPoints)} points`;
         }
 
-        // --- UPDATED CLEAR FUNCTION ---
         function clearInputs() {
             // Set all number inputs to empty
             document.getElementById('cashPrice').value = "";
@@ -328,19 +376,21 @@
             document.getElementById('promoPoints').value = "";
             document.getElementById('altPrice').value = "";
 
-            // Reset point value to its default
-            document.getElementById('pointValue').value = "0.007";
+            // Reset point value to its default (from HTML)
+            document.getElementById('pointValue').value = "0.005";
 
-            // Reset dropdowns to their first option (index 0)
+            // Reset dropdowns to their default selected option
             document.getElementById('brandMultiplier').selectedIndex = 0; // "Standard Brands (10X)"
             document.getElementById('statusMultiplier').selectedIndex = 0; // "Member (0% Bonus)"
             document.getElementById('ccMultiplier').selectedIndex = 0; // "No Marriott Card (0X)"
-            document.getElementById_('welcomePoints').selectedIndex = 0; // "Yes (500 Points)"
+            document.getElementById('welcomePoints').selectedIndex = 1; // "No (1000 Points)"
+
+            // Re-check the current promo box
+            document.getElementById('currentPromo').checked = true;
 
             // After clearing, re-run the calculation
             calculatePoints();
         }
-        // --- END NEW FUNCTION ---
 
         // Add event listeners to all input/select fields to auto-calculate
         document.getElementById('cashPrice').addEventListener('input', calculatePoints);
@@ -352,6 +402,7 @@
         document.getElementById('welcomePoints').addEventListener('change', calculatePoints);
         document.getElementById('promoPoints').addEventListener('input', calculatePoints);
         document.getElementById('altPrice').addEventListener('input', calculatePoints);
+        document.getElementById('currentPromo').addEventListener('change', calculatePoints);
         
         document.getElementById('clearButton').addEventListener('click', clearInputs);
         
